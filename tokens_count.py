@@ -13,9 +13,7 @@ def estimate_input_cost_optimized(model_name, token_count):
     except KeyError:
         raise ValueError(f"The model '{model_name}' is not recognized.")
 
-    estimated_cost = (token_count / 1000) * cost_per_1000_tokens
-
-    return estimated_cost
+    return (token_count / 1000) * cost_per_1000_tokens
 
 
 def count_tokens(text, selected_model):

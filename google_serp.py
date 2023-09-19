@@ -24,16 +24,11 @@ def search_google_web_automation(query):
         fix_hairline=True,
     )
 
-    n_pages = 2
     results = []
     counter = 0
+    n_pages = 2
     for page in range(1, n_pages):
-        url = (
-            "http://www.google.com/search?q="
-            + str(query)
-            + "&start="
-            + str((page - 1) * 10)
-        )
+        url = f"http://www.google.com/search?q={str(query)}&start={str((page - 1) * 10)}"
 
         driver.get(url)
         soup = BeautifulSoup(driver.page_source, "html.parser")
