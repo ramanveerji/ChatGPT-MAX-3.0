@@ -119,7 +119,7 @@ if prompt := st.chat_input("What is up?"):
         blog_url = prompt.split(" ", 1)[1].strip()
         with st.chat_message("assistant"):
             message_placeholder = st.empty()
-            message_placeholder.markdown("Summarizing: " + blog_url)
+            message_placeholder.markdown(f"Summarizing: {blog_url}")
             blog_summary_prompt = blog_posts.get_blog_summary_prompt(blog_url)
             response_obj = openai.ChatCompletion.create(
                 model=model,
@@ -131,7 +131,7 @@ if prompt := st.chat_input("What is up?"):
             blog_summary = ""
             for response in response_obj:
                 blog_summary += response.choices[0].delta.get("content", "")
-                message_placeholder.markdown(blog_summary + "▌")
+                message_placeholder.markdown(f"{blog_summary}▌")
 
             # update the whole prompt to update token count
             start_prompt_used = blog_summary_prompt + blog_summary
@@ -157,7 +157,7 @@ if prompt := st.chat_input("What is up?"):
             new_written_text = ""
             for response in response_obj:
                 new_written_text += response.choices[0].delta.get("content", "")
-                message_placeholder.markdown(new_written_text + "▌")
+                message_placeholder.markdown(f"{new_written_text}▌")
 
             # update the whole prompt to update token count
             start_prompt_used = rewrite_prompt + new_written_text
@@ -171,9 +171,7 @@ if prompt := st.chat_input("What is up?"):
         input_query = prompt.split(" ", 1)[1].strip()
         with st.chat_message("assistant"):
             message_placeholder = st.empty()
-            message_placeholder.markdown(
-                "Searching Google For: " + input_query + " ..."
-            )
+            message_placeholder.markdown(f"Searching Google For: {input_query} ...")
             search_results = google_serp.search_google_web_automation(input_query)
             over_all_summary = ""
 
@@ -192,14 +190,14 @@ if prompt := st.chat_input("What is up?"):
                     stream=True,
                 )
 
-                blog_summary = ""
-                for response in response_obj:
-                    blog_summary += response.choices[0].delta.get("content", "")
-
+                blog_summary = "".join(
+                    response.choices[0].delta.get("content", "")
+                    for response in response_obj
+                )
                 over_all_summary = over_all_summary + blog_summary
                 start_prompt_used = blog_summary_prompt + blog_summary
 
-            message_placeholder.markdown(f"Generating Final Search Report...")
+            message_placeholder.markdown("Generating Final Search Report...")
 
             new_search_prompt = prompts.google_search_prompt.format(
                 input=over_all_summary
@@ -215,7 +213,7 @@ if prompt := st.chat_input("What is up?"):
             research_final = ""
             for response in response_obj:
                 research_final += response.choices[0].delta.get("content", "")
-                message_placeholder.markdown(research_final + "▌")
+                message_placeholder.markdown(f"{research_final}▌")
 
             start_prompt_used = start_prompt_used + new_search_prompt + research_final
 
@@ -245,7 +243,7 @@ if prompt := st.chat_input("What is up?"):
 
             for response in response_obj:
                 full_response += response.choices[0].delta.get("content", "")
-                message_placeholder.markdown(full_response + "▌")
+                message_placeholder.markdown(f"{full_response}▌")
 
             message_placeholder.markdown(full_response)
 
